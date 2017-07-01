@@ -22,10 +22,12 @@ public class BeerAdapter extends RecyclerView.Adapter<BeerAdapter.BeerViewHolder
 
     private Context mContext;
     private ArrayList<Beer> mBeerList;
+    private BeerItemClickListener mListener;
 
-    public BeerAdapter(ArrayList<Beer> beerDataSource, Context context){
+    public BeerAdapter(ArrayList<Beer> beerDataSource, Context context, BeerItemClickListener clickListener){
         mBeerList = beerDataSource;
         mContext = context;
+        mListener = clickListener;
 
     }
 
@@ -47,7 +49,11 @@ public class BeerAdapter extends RecyclerView.Adapter<BeerAdapter.BeerViewHolder
         return mBeerList.size();
     }
 
-    class BeerViewHolder extends RecyclerView.ViewHolder{
+    public interface BeerItemClickListener{
+        void onItemClick(int itemClicked);
+    }
+
+    class BeerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private TextView beerTitle, beerBrewery;
         private ImageView beerLabel;
 
@@ -56,6 +62,7 @@ public class BeerAdapter extends RecyclerView.Adapter<BeerAdapter.BeerViewHolder
             beerTitle = (TextView) itemView.findViewById(R.id.item_beer_title);
             beerBrewery = (TextView) itemView.findViewById(R.id.item_brewery_name);
             beerLabel = (ImageView) itemView.findViewById(R.id.item_beer_image);
+            itemView.setOnClickListener(this);
 
 
         }
@@ -65,6 +72,11 @@ public class BeerAdapter extends RecyclerView.Adapter<BeerAdapter.BeerViewHolder
             beerTitle.setText(beerToBind.getBeerTitle());
             beerBrewery.setText(beerToBind.getBrewery().getBreweryName());
             Picasso.with(mContext).load(beerToBind.getBeerLabels().getmMediumLabel()).placeholder(R.drawable.beer_placeholder).fit().into(beerLabel);
+        }
+
+        @Override
+        public void onClick(View v) {
+            mListener.onItemClick(getAdapterPosition());
         }
     }
 }

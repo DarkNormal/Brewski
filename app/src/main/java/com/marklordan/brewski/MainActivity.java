@@ -1,5 +1,6 @@
 package com.marklordan.brewski;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -20,7 +21,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements BeerAdapter.BeerItemClickListener{
 
     private ArrayList<Beer> beerList = new ArrayList<>();
     BreweryService service;
@@ -33,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         recyclerView = (RecyclerView) findViewById(R.id.beer_recyclerview);
-        adapter = new BeerAdapter(beerList, this);
+        adapter = new BeerAdapter(beerList, this, this);
         LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
@@ -51,6 +52,12 @@ public class MainActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
             }
         });
+    }
+
+    @Override
+    public void onItemClick(int itemClicked) {
+        Intent intent = new Intent(this, DetailActivity.class);
+        startActivity(intent);
     }
 
 
