@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Brewski</string>
+
+    <string name="baseUrl">http://api.brewerydb.com/v2/</string>
 </resources>
