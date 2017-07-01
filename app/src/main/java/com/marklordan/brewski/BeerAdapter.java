@@ -71,7 +71,7 @@ public class BeerAdapter extends RecyclerView.Adapter<BeerAdapter.BeerViewHolder
             Beer beerToBind = mBeerList.get(getAdapterPosition());
             beerTitle.setText(beerToBind.getBeerTitle());
             beerBrewery.setText(beerToBind.getBrewery().getBreweryName());
-            Picasso.with(mContext).load(beerToBind.getBeerLabels().getmMediumLabel()).placeholder(R.drawable.beer_placeholder).fit().into(beerLabel);
+            Picasso.with(mContext).load(beerToBind.getBeerLabels().getmMediumLabel()).fit().into(beerLabel);
         }
 
         @Override

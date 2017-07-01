@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements BeerAdapter.BeerI
 
     @Override
     public void onItemClick(int itemClicked) {
-        Intent intent = new Intent(this, DetailActivity.class);
+        Intent intent = DetailActivity.newInstance(this, beerList.get(itemClicked));
         startActivity(intent);
     }
 

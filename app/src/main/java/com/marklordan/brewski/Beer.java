@@ -2,11 +2,13 @@ package com.marklordan.brewski;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 /**
  * Beer model class
  */
 
-public class Beer {
+public class Beer implements Serializable {
 
     @SerializedName("name")
     private String mTitle;
@@ -20,7 +22,7 @@ public class Beer {
     private Brewery[] brewery;
 
     @SerializedName("labels")
-    private BeerLabels mLabels;
+    private Labels mLabels;
 
 
     public Beer(String mTitle, String mDescription) {
@@ -32,32 +34,19 @@ public class Beer {
         return mTitle;
     }
 
+    public String getmDescription() {
+        return mDescription;
+    }
+
+    public double getmAbv() {
+        return mAbv;
+    }
+
     public Brewery getBrewery(){
         return brewery[0];
     }
 
-    public BeerLabels getBeerLabels() {
+    public Labels getBeerLabels() {
         return mLabels;
-    }
-
-    class BeerLabels{
-        @SerializedName("icon")
-        private String mIcon;
-        @SerializedName("medium")
-        private String mMediumLabel;
-        @SerializedName("large")
-        private String mLargeIcon;
-
-        public String getmIcon() {
-            return mIcon;
-        }
-
-        public String getmMediumLabel() {
-            return mMediumLabel;
-        }
-
-        public String getmLargeIcon() {
-            return mLargeIcon;
-        }
     }
 }
