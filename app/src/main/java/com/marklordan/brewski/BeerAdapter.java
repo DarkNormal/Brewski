@@ -5,7 +5,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -46,18 +49,22 @@ public class BeerAdapter extends RecyclerView.Adapter<BeerAdapter.BeerViewHolder
 
     class BeerViewHolder extends RecyclerView.ViewHolder{
         private TextView beerTitle, beerBrewery;
+        private ImageView beerLabel;
 
         public BeerViewHolder(View itemView) {
             super(itemView);
             beerTitle = (TextView) itemView.findViewById(R.id.item_beer_title);
             beerBrewery = (TextView) itemView.findViewById(R.id.item_brewery_name);
+            beerLabel = (ImageView) itemView.findViewById(R.id.item_beer_image);
 
 
         }
 
         public void bind(){
-            beerTitle.setText(mBeerList.get(getAdapterPosition()).getBeerTitle());
-            beerBrewery.setText(mBeerList.get(getAdapterPosition()).getBreweryName());
+            Beer beerToBind = mBeerList.get(getAdapterPosition());
+            beerTitle.setText(beerToBind.getBeerTitle());
+            beerBrewery.setText(beerToBind.getBrewery().getBreweryName());
+            Picasso.with(mContext).load(beerToBind.getBeerLabels().getmMediumLabel()).placeholder(R.drawable.beer_placeholder).fit().into(beerLabel);
         }
     }
 }

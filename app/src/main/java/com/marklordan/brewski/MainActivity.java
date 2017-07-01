@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -48,18 +47,12 @@ public class MainActivity extends AppCompatActivity {
             public void onSuccess() {
                 adapter.notifyDataSetChanged();
             }
-
-            @Override
-            public void onError() {
-
-            }
         });
     }
 
 
     public interface BeerCallback{
         void onSuccess();
-        void onError();
     }
 
     public void getBeers(final BeerCallback callback){
@@ -68,23 +61,16 @@ public class MainActivity extends AppCompatActivity {
         beers.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                Toast.makeText(MainActivity.this, "succesful response", Toast.LENGTH_SHORT).show();
-                Log.d("MainActivity", response.toString());
                 JsonArray data = response.body().getAsJsonArray("data");
                 for (JsonElement element : data ) {
                     Beer beer = new Gson().fromJson(element, Beer.class);
                     beerList.add(beer);
                 }
                 callback.onSuccess();
-
-                for (Beer b : beerList) {
-                    System.out.println(b.getBeerTitle());
-                }
             }
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-
-                Toast.makeText(MainActivity.this, "unsuccessful response", Toast.LENGTH_SHORT).show();
+                Log.d("MainActivity", "Error in getBeers", t);
             }
         });
     }

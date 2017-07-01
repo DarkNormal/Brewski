@@ -14,6 +14,6 @@ import retrofit2.http.Query;
 
 public interface BreweryService {
 
-    @GET("beers/?name=****&withBreweries=Y")
+    @GET("beers/?name=****&withBreweries=Y&&hasLabels=Y")
     Call<JsonObject> getBeers(@Query("key") String apiKey);
 }

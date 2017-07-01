@@ -19,24 +19,45 @@ public class Beer {
     @SerializedName("breweries")
     private Brewery[] brewery;
 
-    private String mBreweryName;
+    @SerializedName("labels")
+    private BeerLabels mLabels;
 
-    public Beer(String mTitle, String mBreweryName) {
-        this.mTitle = mTitle;
-        this.mBreweryName = mBreweryName;
-    }
 
-    public Beer(String mTitle, String mDescription, String mBreweryName) {
+    public Beer(String mTitle, String mDescription) {
         this.mTitle = mTitle;
         this.mDescription = mDescription;
-        this.mBreweryName = mBreweryName;
     }
 
     public String getBeerTitle() {
         return mTitle;
     }
 
-    public String getBreweryName() {
-        return mBreweryName;
+    public Brewery getBrewery(){
+        return brewery[0];
+    }
+
+    public BeerLabels getBeerLabels() {
+        return mLabels;
+    }
+
+    class BeerLabels{
+        @SerializedName("icon")
+        private String mIcon;
+        @SerializedName("medium")
+        private String mMediumLabel;
+        @SerializedName("large")
+        private String mLargeIcon;
+
+        public String getmIcon() {
+            return mIcon;
+        }
+
+        public String getmMediumLabel() {
+            return mMediumLabel;
+        }
+
+        public String getmLargeIcon() {
+            return mLargeIcon;
+        }
     }
 }

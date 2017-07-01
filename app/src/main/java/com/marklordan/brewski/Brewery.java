@@ -23,7 +23,7 @@ public class Brewery {
     @SerializedName("status")
     public String mIsVerified;
 
-    public String getmName() {
+    public String getBreweryName() {
         return mName;
     }
 }
