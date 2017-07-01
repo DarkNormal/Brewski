@@ -50,7 +50,7 @@ public class BeerAdapter extends RecyclerView.Adapter<BeerAdapter.BeerViewHolder
     }
 
     public interface BeerItemClickListener{
-        void onItemClick(int itemClicked);
+        void onItemClick(int itemClicked, ImageView beerImage, TextView beerTitle);
     }
 
     class BeerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -76,7 +76,9 @@ public class BeerAdapter extends RecyclerView.Adapter<BeerAdapter.BeerViewHolder
 
         @Override
         public void onClick(View v) {
-            mListener.onItemClick(getAdapterPosition());
+            mListener.onItemClick(getAdapterPosition(),
+                    (ImageView) v.findViewById(R.id.item_beer_image),
+                    (TextView) v.findViewById(R.id.item_beer_title));
         }
     }
 }

@@ -30,6 +30,8 @@
 
     <ImageView
         android:id="@+id/beerLabelImageView"
+        android:transitionName="beerImageTransition"
+        android:windowSharedElementsUseOverlay="false"
         android:layout_width="129dp"
         android:layout_height="126dp"
         android:layout_marginLeft="16dp"
@@ -39,6 +41,8 @@
 
     <TextView
         android:id="@+id/beerTitleTextView"
+        android:transitionName="beerTitleTransition"
+        android:windowSharedElementsUseOverlay="false"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"

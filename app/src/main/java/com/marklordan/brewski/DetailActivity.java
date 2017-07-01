@@ -1,5 +1,6 @@
 package com.marklordan.brewski;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
 
@@ -7,10 +8,15 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.transition.Fade;
+import android.transition.Transition;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
@@ -58,13 +64,28 @@ public class DetailActivity extends AppCompatActivity {
             Log.e("DetailActivity", e.getMessage(), e);
         }
 
+        //delays
+        supportPostponeEnterTransition();
+
         if(mCurrentBeer != null){
             bindUi();
         }
     }
 
     private void bindUi(){
-        Picasso.with(this).load(mCurrentBeer.getBeerLabels().getmMediumLabel()).into(mBeerLabel);
+        Picasso.with(this).load(mCurrentBeer.getBeerLabels().getmMediumLabel())
+                .noFade()
+                .into(mBeerLabel, new Callback() {
+            @Override
+            public void onSuccess() {
+                supportStartPostponedEnterTransition();
+            }
+
+            @Override
+            public void onError() {
+                supportStartPostponedEnterTransition();
+            }
+        });
         mBeerTitle.setText(mCurrentBeer.getBeerTitle());
         mBeerDescription.setText(mCurrentBeer.getmDescription());
         mAbv.setText(getString(R.string.abv, df.format(mCurrentBeer.getmAbv())));
