@@ -1,23 +1,63 @@
 package com.marklordan.brewski;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Beer model class
  */
 
 public class Beer {
 
-    private String mTitle, mBreweryName;
+    @SerializedName("name")
+    private String mTitle;
+    @SerializedName("description")
+    private String mDescription;
 
-    public Beer(String beerName, String beerBrewery){
-        mTitle = beerName;
-        mBreweryName = beerBrewery;
+    @SerializedName("abv")
+    private double mAbv;
+
+    @SerializedName("breweries")
+    private Brewery[] brewery;
+
+    @SerializedName("labels")
+    private BeerLabels mLabels;
+
+
+    public Beer(String mTitle, String mDescription) {
+        this.mTitle = mTitle;
+        this.mDescription = mDescription;
     }
 
     public String getBeerTitle() {
         return mTitle;
     }
 
-    public String getBreweryName() {
-        return mBreweryName;
+    public Brewery getBrewery(){
+        return brewery[0];
+    }
+
+    public BeerLabels getBeerLabels() {
+        return mLabels;
+    }
+
+    class BeerLabels{
+        @SerializedName("icon")
+        private String mIcon;
+        @SerializedName("medium")
+        private String mMediumLabel;
+        @SerializedName("large")
+        private String mLargeIcon;
+
+        public String getmIcon() {
+            return mIcon;
+        }
+
+        public String getmMediumLabel() {
+            return mMediumLabel;
+        }
+
+        public String getmLargeIcon() {
+            return mLargeIcon;
+        }
     }
 }
