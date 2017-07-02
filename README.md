@@ -9,9 +9,11 @@ Android Support Library (Design, AppCompat, CardView)
 [LikeButton](https://github.com/jd-alexander/LikeButton) by Joel Dean Alexander
 
 ## Running Brewski
-To access the BreweryDb API, you'll need an API key. Create a `gradle.properties` file in the root directory of Brewski.  
+To access the BreweryDb API, you'll need an API key. For security reasons, this API key has been excluded for this repository. The steps to build and run the application are:  
+Create a `gradle.properties` file in the root directory of Brewski.  
 In this file, add the below line, replacing <API_KEY> with your own:  
-`breweryDbApiKey = "<API_KEY>"`
+`breweryDbApiKey = "<API_KEY>"`  
+This will be picked up in the app level build.gradle file as API_KEY, which will be accessed in code via `BuildConfig.API_KEY`
 
 ### BottomNavigationView branch
 There is another branch, BottomNav, which I did not finish off. I was in the process of converting the current design to include a BottomNavigationView, Fragments for the content, and a ViewPager for swiping left and right.  
@@ -27,5 +29,5 @@ I swapped it with `.resize(128,128)` which reduced the memory use significantly 
 ![Picasso Issue](https://github.com/DarkNormal/Brewski/blob/master/docs/memory-issue-fix.png "Picasso Memory Issue")
 
 It would be better if the BreweryDb provided better images for Breweries and labels - there's a lot of whitespace on them but that can't be changed.  
-Some beers are also missing labels / Brewery information, so that's why the Query is so specific.
+Some beers are also missing labels / Brewery information, so that's why the Query is so specific in the Retrofit service.
 
