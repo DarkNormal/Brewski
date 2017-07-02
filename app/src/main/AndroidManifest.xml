@@ -24,6 +24,11 @@
             <meta-data android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity"/>
         </activity>
+
+        <provider
+            android:authorities="com.marklordan.Brewski"
+            android:name="com.marklordan.brewski.data.FavouriteContentProvider"
+            android:exported="false" />
     </application>
 
 </manifest>

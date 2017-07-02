@@ -1,21 +1,24 @@
 package com.marklordan.brewski;
 
-import android.animation.Animator;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 
+import android.database.Cursor;
+import android.net.Uri;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.transition.Fade;
-import android.transition.Transition;
+
 import android.util.Log;
-import android.view.View;
-import android.view.ViewAnimationUtils;
+
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.like.LikeButton;
+import com.like.OnLikeListener;
+import com.marklordan.brewski.data.FavouriteBeersContract;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -28,6 +31,7 @@ public class DetailActivity extends AppCompatActivity {
     private Beer mCurrentBeer;
     private ImageView mBeerLabel, mBreweryBackground;
     private TextView mBeerTitle, mBeerDescription, mAbv, mIsOrganic;
+    private LikeButton mLikeButton;
     private DecimalFormat df = new DecimalFormat("#.#");
 
     public static Intent newInstance(Context context, Beer beer) {
@@ -56,6 +60,8 @@ public class DetailActivity extends AppCompatActivity {
         mBeerDescription = (TextView) findViewById(R.id.beerDescriptionTextView);
         mAbv = (TextView) findViewById(R.id.beerAbvTextView);
         mIsOrganic = (TextView) findViewById(R.id.beerIsOrganicTextView);
+        mLikeButton = (LikeButton) findViewById(R.id.favourite_button);
+
 
         try {
             ActionBar actionBar = getSupportActionBar();
@@ -65,12 +71,38 @@ public class DetailActivity extends AppCompatActivity {
             Log.e("DetailActivity", e.getMessage(), e);
         }
 
-        //delays
         supportPostponeEnterTransition();
 
         if(mCurrentBeer != null){
             bindUi();
         }
+
+        Cursor cursor = getContentResolver().query(FavouriteBeersContract.FavouriteBeersEntry.CONTENT_URI,
+                null,
+                FavouriteBeersContract.FavouriteBeersEntry.COLUMN_BEER_ID + " = '" + mCurrentBeer.getmId() + "'",
+                null,
+                null,
+                null);
+
+        if (cursor != null) {
+            while(cursor.moveToNext()){
+                mLikeButton.setLiked(true);
+            }
+        }
+        cursor.close();
+
+        mLikeButton.setOnLikeListener(new OnLikeListener() {
+            @Override
+            public void liked(LikeButton likeButton) {
+                ContentValues cv = buildBeerContentValues();
+                addBeerToFavouriteDb(cv);
+            }
+
+            @Override
+            public void unLiked(LikeButton likeButton) {
+                removeBeerFromFavouriteDb();
+            }
+        });
     }
 
     private void bindUi(){
@@ -95,5 +127,25 @@ public class DetailActivity extends AppCompatActivity {
         Picasso.with(this).load(backgroundUrl).into(mBreweryBackground);
         String isOrganicBeer = getString(R.string.organic, mCurrentBeer.getIsOrganic());
         mIsOrganic.setText(isOrganicBeer);
+    }
+
+    private ContentValues buildBeerContentValues(){
+        ContentValues cv = new ContentValues();
+        cv.put(FavouriteBeersContract.FavouriteBeersEntry.COLUMN_BEER_ID, mCurrentBeer.getmId());
+        cv.put(FavouriteBeersContract.FavouriteBeersEntry.COLUMN_BEER_TITLE, mCurrentBeer.getBeerTitle());
+        return cv;
+    }
+
+    private void addBeerToFavouriteDb(ContentValues cv){
+        getContentResolver().insert(FavouriteBeersContract.FavouriteBeersEntry.CONTENT_URI, cv);
+    }
+
+    private void removeBeerFromFavouriteDb(){
+        String id = mCurrentBeer.getmId();
+        Uri uri = FavouriteBeersContract.FavouriteBeersEntry.CONTENT_URI;
+        uri = uri.buildUpon().appendPath(id).build();
+
+        getContentResolver().delete(uri, null,null);
+
     }
 }
