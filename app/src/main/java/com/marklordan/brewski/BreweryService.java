@@ -16,4 +16,7 @@ public interface BreweryService {
 
     @GET("beers/?name=****&withBreweries=Y&&hasLabels=Y")
     Call<JsonObject> getBeers(@Query("key") String apiKey);
+
+    @GET("beers/?name=****&withBreweries=Y&&hasLabels=Y")
+    Call<JsonObject> getRandomBeers(@Query("key") String apiKey, @Query("p") int pageNumber);
 }
