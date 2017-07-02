@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_beer"
+        android:enabled="true"
+        android:icon="@drawable/ic_local_bar"
+        android:title="@string/beer"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_brewery"
+        android:enabled="true"
+        android:icon="@drawable/ic_brewery"
+        android:title="@string/brewery"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_search"
+        android:enabled="true"
+        android:icon="@drawable/ic_search"
+        android:title="@string/search"
+        app:showAsAction="ifRoom" />
+</menu>
