@@ -6,7 +6,17 @@ BreweryDb API - test application purposes only
 Retrofit 2  
 Picasso - Image loading  
 Android Support Library (Design, AppCompat, CardView)  
+[LikeButton](https://github.com/jd-alexander/LikeButton) by Joel Dean Alexander
 
+## Running Brewski
+To access the BreweryDb API, you'll need an API key. Create a `gradle.properties` file in the root directory of Brewski.  
+In this file, add the below line, replacing <API_KEY> with your own:  
+`breweryDbApiKey = "<API_KEY>"`
+
+### BottomNavigationView branch
+There is another branch, BottomNav, which I did not finish off. I was in the process of converting the current design to include a BottomNavigationView, Fragments for the content, and a ViewPager for swiping left and right.  
+The bones of this are in this branch, however I didn't have time to finish it off and clean it up (it just shows 3 of the same Fragments for all tabs when swiping, and doesn't change Fragments when the BottomNavigationView is used)  
+It's the first time I tried out the BottomNavigationView so it's a bit messy.
 
 ## Picasso Memory Issue
 I had an issue with Picasso and loading images in the Recyclerview. If I ran through the full list, the memory usage would spike (and stay spiked) as they were kept in this view. I knew it was the images because it was fine when I removed them.
