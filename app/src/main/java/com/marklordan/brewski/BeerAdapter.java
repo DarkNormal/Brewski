@@ -23,18 +23,24 @@ public class BeerAdapter extends RecyclerView.Adapter<BeerAdapter.BeerViewHolder
     private Context mContext;
     private ArrayList<Beer> mBeerList;
     private BeerItemClickListener mListener;
+    private boolean isList;
 
-    public BeerAdapter(ArrayList<Beer> beerDataSource, Context context, BeerItemClickListener clickListener){
+    public BeerAdapter(ArrayList<Beer> beerDataSource, Context context, BeerItemClickListener clickListener, boolean isListOrientation){
         mBeerList = beerDataSource;
         mContext = context;
         mListener = clickListener;
-
+        isList = isListOrientation;
     }
 
     @Override
     public BeerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        View view = inflater.inflate(R.layout.beer_list_item, parent, false);
+        View view;
+        if(isList) {
+            view = inflater.inflate(R.layout.beer_list_item, parent, false);
+        }else{
+            view = inflater.inflate(R.layout.beer_grid_item, parent, false);
+        }
         return new BeerViewHolder(view);
     }
 
@@ -60,7 +66,9 @@ public class BeerAdapter extends RecyclerView.Adapter<BeerAdapter.BeerViewHolder
         public BeerViewHolder(View itemView) {
             super(itemView);
             beerTitle = (TextView) itemView.findViewById(R.id.item_beer_title);
-            beerBrewery = (TextView) itemView.findViewById(R.id.item_brewery_name);
+            if(isList) {
+                beerBrewery = (TextView) itemView.findViewById(R.id.item_brewery_name);
+            }
             beerLabel = (ImageView) itemView.findViewById(R.id.item_beer_image);
             itemView.setOnClickListener(this);
 
@@ -70,8 +78,10 @@ public class BeerAdapter extends RecyclerView.Adapter<BeerAdapter.BeerViewHolder
         public void bind(){
             Beer beerToBind = mBeerList.get(getAdapterPosition());
             beerTitle.setText(beerToBind.getBeerTitle());
-            beerBrewery.setText(beerToBind.getBrewery().getBreweryName());
-            Picasso.with(mContext).load(beerToBind.getBeerLabels().getmMediumLabel()).fit().into(beerLabel);
+            if(isList) {
+                beerBrewery.setText(beerToBind.getBrewery().getBreweryName());
+            }
+            Picasso.with(mContext).load(beerToBind.getBeerLabels().getmMediumLabel()).resize(128,128).into(beerLabel);
         }
 
         @Override

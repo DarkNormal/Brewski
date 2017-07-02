@@ -27,7 +27,7 @@ public class DetailActivity extends AppCompatActivity {
 
     private Beer mCurrentBeer;
     private ImageView mBeerLabel, mBreweryBackground;
-    private TextView mBeerTitle, mBeerDescription, mAbv;
+    private TextView mBeerTitle, mBeerDescription, mAbv, mIsOrganic;
     private DecimalFormat df = new DecimalFormat("#.#");
 
     public static Intent newInstance(Context context, Beer beer) {
@@ -55,6 +55,7 @@ public class DetailActivity extends AppCompatActivity {
         mBeerTitle = (TextView) findViewById(R.id.beerTitleTextView);
         mBeerDescription = (TextView) findViewById(R.id.beerDescriptionTextView);
         mAbv = (TextView) findViewById(R.id.beerAbvTextView);
+        mIsOrganic = (TextView) findViewById(R.id.beerIsOrganicTextView);
 
         try {
             ActionBar actionBar = getSupportActionBar();
@@ -92,5 +93,7 @@ public class DetailActivity extends AppCompatActivity {
         String backgroundUrl = (mCurrentBeer.getBrewery().getmBreweryImages() == null ? mCurrentBeer.getBeerLabels().getmLargeIcon() :
                 mCurrentBeer.getBrewery().getmBreweryImages().getmLargeIcon());
         Picasso.with(this).load(backgroundUrl).into(mBreweryBackground);
+        String isOrganicBeer = getString(R.string.organic, mCurrentBeer.getIsOrganic());
+        mIsOrganic.setText(isOrganicBeer);
     }
 }

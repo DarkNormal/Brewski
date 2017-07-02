@@ -9,6 +9,8 @@ import java.io.Serializable;
  */
 
 public class Beer implements Serializable {
+    @SerializedName("id")
+    private String mId;
 
     @SerializedName("name")
     private String mTitle;
@@ -17,6 +19,9 @@ public class Beer implements Serializable {
 
     @SerializedName("abv")
     private double mAbv;
+
+    @SerializedName("isOrganic")
+    private String mIsOrganic;
 
     @SerializedName("breweries")
     private Brewery[] brewery;
@@ -30,6 +35,10 @@ public class Beer implements Serializable {
         this.mDescription = mDescription;
     }
 
+    public String getmId() {
+        return mId;
+    }
+
     public String getBeerTitle() {
         return mTitle;
     }
@@ -40,6 +49,11 @@ public class Beer implements Serializable {
 
     public double getmAbv() {
         return mAbv;
+    }
+
+    public String getIsOrganic() {
+        String isOrganicBeer = (mIsOrganic.isEmpty() ? "Unknown" : (mIsOrganic.equals("Y") ? "Yes" : "No"));
+        return isOrganicBeer;
     }
 
     public Brewery getBrewery(){

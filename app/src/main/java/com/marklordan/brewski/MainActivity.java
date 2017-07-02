@@ -1,5 +1,6 @@
 package com.marklordan.brewski;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -8,10 +9,15 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -34,17 +40,22 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity implements BeerAdapter.BeerItemClickListener{
 
     public static final String BEER_LIST = "com.marklordan.brewski.BEER_LIST";
+    public static final String RECYCLERVIEW_LAYOUT = "com.marklordan.brewski.LAYOUT";
 
     private ArrayList<Beer> beerList = new ArrayList<>();
     BreweryService service;
     private BeerAdapter adapter;
     private RecyclerView recyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private boolean isListSelected = true;
 
     private Retrofit retrofit;
     private Toolbar toolbar;
     private ProgressBar mProgressBar;
     private LinearLayout mNetworkErrorView;
+    private LinearLayoutManager linearLayoutManager;
+    private GridLayoutManager gridLayoutManager;
+    private DividerItemDecoration dividerItemDecoration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,14 +64,28 @@ public class MainActivity extends AppCompatActivity implements BeerAdapter.BeerI
 
         if(savedInstanceState != null) {
             beerList = (ArrayList<Beer>) savedInstanceState.getSerializable(BEER_LIST);
+            isListSelected = savedInstanceState.getBoolean(RECYCLERVIEW_LAYOUT);
         }
-
+        linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        gridLayoutManager = new GridLayoutManager(getApplicationContext(), calculateNoOfColumns(getApplicationContext()));
         //Recyclerview Setup
         recyclerView = (RecyclerView) findViewById(R.id.beer_recyclerview);
-        adapter = new BeerAdapter(beerList, this, this);
-        LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        recyclerView.setLayoutManager(manager);
-        recyclerView.setAdapter(adapter);
+        if(isListSelected){
+
+            adapter = new BeerAdapter(beerList, this, this, true);
+            recyclerView.setLayoutManager(linearLayoutManager);
+            recyclerView.setAdapter(adapter);
+
+            //Recyclerview divivders between items
+            dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), linearLayoutManager.getOrientation());
+            recyclerView.addItemDecoration(dividerItemDecoration);
+        }else{
+
+            adapter = new BeerAdapter(beerList, this, this, false);
+            recyclerView.setLayoutManager(gridLayoutManager);
+            recyclerView.setAdapter(adapter);
+        }
+
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -68,10 +93,6 @@ public class MainActivity extends AppCompatActivity implements BeerAdapter.BeerI
                 refreshBeers();
             }
         });
-
-        //Recyclerview divivders between items
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), manager.getOrientation());
-        recyclerView.addItemDecoration(dividerItemDecoration);
 
         retrofit = new Retrofit.Builder()
                 .baseUrl(getString(R.string.baseUrl))
@@ -94,10 +115,53 @@ public class MainActivity extends AppCompatActivity implements BeerAdapter.BeerI
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        String layoutName = (isListSelected ? getString(R.string.list_options) : getString(R.string.grid_options));
+        MenuItem layoutOption = menu.findItem(R.id.view_option);
+        layoutOption.setTitle(layoutName);
+        layoutOption.setIcon((isListSelected ? getDrawable(R.drawable.ic_format_list_bulleted) : getDrawable(R.drawable.ic_grid_on)));
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(isListSelected){
+            item.setIcon(R.drawable.ic_grid_on);
+            item.setTitle(getString(R.string.grid_options));
+            isListSelected = false;
+            adapter = new BeerAdapter(beerList, this, this, false);
+            recyclerView.setLayoutManager(gridLayoutManager);
+            recyclerView.removeItemDecoration(dividerItemDecoration);
+            recyclerView.setAdapter(adapter);
+        } else{
+            item.setIcon(R.drawable.ic_format_list_bulleted);
+            item.setTitle(getString(R.string.list_options));
+            adapter = new BeerAdapter(beerList, this, this, true);
+            recyclerView.setLayoutManager(linearLayoutManager);
+            recyclerView.setAdapter(adapter);
+            dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), linearLayoutManager.getOrientation());
+            recyclerView.addItemDecoration(dividerItemDecoration);
+            isListSelected = true;
+        }
+
+        return super.onOptionsItemSelected(item);
+
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         //save the beers to the bundle for use on rotation
         outState.putSerializable(BEER_LIST, beerList);
+        outState.putBoolean(RECYCLERVIEW_LAYOUT, isListSelected);
     }
 
     //Callback for launching DetailsActivity when an item is clicked
@@ -156,7 +220,7 @@ public class MainActivity extends AppCompatActivity implements BeerAdapter.BeerI
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 JsonArray data = response.body().getAsJsonArray("data");
-
+                beerList.clear();
                 //Parse the JSON to POJOs and store in a list
                 for (JsonElement element : data ) {
                     Beer beer = new Gson().fromJson(element, Beer.class);
@@ -170,5 +234,12 @@ public class MainActivity extends AppCompatActivity implements BeerAdapter.BeerI
                 callback.onError();
             }
         });
+    }
+
+    public static int calculateNoOfColumns(Context context) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+        int noOfColumns = (int) (dpWidth / 180);
+        return noOfColumns;
     }
 }
